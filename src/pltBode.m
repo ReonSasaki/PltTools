@@ -169,7 +169,7 @@ end
 
 function pltGain(data,option)
 gain = @(data) mag2db(abs(squeeze(data.ResponseData)));
-for k = 1:1:length(data)
+for k = 1:length(data)
     for kk = 1:length(data{k}.sys)
         if strcmp(option.foption, 'log')
             if strcmp(data{k}.style,'')
@@ -179,6 +179,7 @@ for k = 1:1:length(data)
                     set(h,'MarkerFaceColor',data{k}.color);
                 end
                 set(gca,'xscale','log');
+                set(get(get(h,'Annotation'),'LegendInformation'),'IconDisplayStyle','on');
             else
                 h = semilogx(data{k}.sys.frequency,gain(data{k}.sys(:,:,kk))); hold on;
                 if ~option.multiFRDcolor, try set(h,'Color',data{k}.color); catch, end; end
@@ -194,7 +195,9 @@ end
 axis([option.fmin, option.fmax, option.gmin, option.gmax]);
 set(gca,'ytick',option.gmin:option.gtick:option.gmax);
 ylabel('Magnitude [dB]');
-if strcmp(option.Legpos,'gain') && ~option.noLegend, multiLegend(data); end
+if strcmp(option.Legpos,'gain') && ~option.noLegend
+    multiLegend(data);
+end
 grid on; hold on;
 if isfield(option,'title'), title(option.title); end
 end
@@ -221,9 +224,9 @@ for k = option.phasePlot
                 end
                 set(gca,'xscale','log');
             else
-                h = semilogx(data{k}.sys.frequency,phasedeg); hold on;
+                h = semilogx(data{k}.sys.frequency,phasedeg,data{k}.style); hold on;
                 if ~option.multiFRDcolor, try set(h,'Color',data{k}.color); catch, end; end
-                set(h,'linestyle',data{k}.style);
+                % set(h,'linestyle',data{k}.style);
                 if isfield(data{k},'marker'), set(h,'Marker',data{k}.marker); end
             end
         else
